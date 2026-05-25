@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Ingia Admin - Lupanulla</title>
+</head>
+<body style="text-align:center; padding-top:100px; font-family:sans-serif; background:#f4f4f4;">
+    <div style="background:#fff; padding:30px; border-radius:10px; display:inline-block; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+        <h2>Karibu Admin</h2>
+        <p>Ingiza password ili kufikia dashibodi</p>
+        <input type="password" id="pass" placeholder="Password" style="padding:10px; margin:10px 0; width:200px;">
+        <br>
+        <button onclick="login()" style="padding:10px 20px; background:#84cc16; border:none; color:white; cursor:pointer;">Ingia</button>
+    </div>
+
+    <script>
+        function login() {
+            let password = document.getElementById('pass').value;
+            // Password yako imewekwa hapa
+            if(password === "lupanulla@admin2026") {
+                localStorage.setItem('admin_access', 'granted');
+                window.location.href = "admin.html";
+            } else {
+                alert("Password siyo sahihi! Jaribu tena.");
+            }
+        }
+    </script>
+</body>
+</html>
