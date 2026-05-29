@@ -1,29 +1,827 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-    <meta charset="UTF-8">
-    <title>Ingia Admin - Lupanulla</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingia / Jiunge — Lupanulla</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #84cc16;
+    --green-dark: #65a30d;
+    --green-glow: rgba(132,204,22,0.18);
+    --bg: #0c1a00;
+    --surface: #131f02;
+    --surface2: #1a2a04;
+    --border: rgba(132,204,22,0.15);
+    --text: #e8f5c8;
+    --text-muted: #7a9a3a;
+    --error: #f87171;
+    --error-bg: rgba(248,113,113,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(132,204,22,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(132,204,22,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Grid texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(132,204,22,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(132,204,22,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  /* Logo */
+  .logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--green);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #0c1a00;
+    letter-spacing: -1px;
+    box-shadow: 0 0 24px var(--green-glow);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span { color: var(--green); }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(132,204,22,0.05);
+  }
+
+  /* Tabs */
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+  }
+
+  .tab {
+    padding: 10px;
+    text-align: center;
+    border-radius: 9px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+    letter-spacing: 0.3px;
+  }
+
+  .tab.active {
+    background: var(--green);
+    color: #0c1a00;
+    box-shadow: 0 4px 12px rgba(132,204,22,0.3);
+  }
+
+  /* Forms */
+  .form { display: none; }
+  .form.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateX(8px); }
+    to { opacity:1; transform: translateX(0); }
+  }
+
+  .form-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .form-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 7px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder { color: #3d5a10; }
+
+  input:focus, select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px var(--green-glow);
+  }
+
+  select option { background: #1a2a04; color: var(--text); }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Password toggle */
+  .pass-wrap { position: relative; }
+  .pass-wrap input { padding-right: 42px; }
+  .pass-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px;
+    transition: color 0.2s;
+  }
+  .pass-toggle:hover { color: var(--green); }
+
+  /* Error/success messages */
+  .msg {
+    padding: 11px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+    font-weight: 500;
+  }
+  .msg.error { background: var(--error-bg); color: var(--error); border: 1px solid rgba(248,113,113,0.2); display: block; }
+  .msg.success { background: rgba(132,204,22,0.1); color: var(--green); border: 1px solid rgba(132,204,22,0.2); display: block; }
+
+  /* Button */
+  .btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--green);
+    color: #0c1a00;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn:hover {
+    background: var(--green-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(132,204,22,0.3);
+  }
+
+  .btn:active { transform: translateY(0); }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: #0c1a00;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn.loading .btn-spinner { display: inline-block; }
+  .btn.loading .btn-text { opacity: 0.7; }
+
+  /* Forgot password */
+  .forgot {
+    text-align: right;
+    margin-bottom: 16px;
+  }
+
+  .forgot a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .forgot a:hover { color: var(--green); }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Google button */
+  .btn-google {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-google:hover {
+    border-color: var(--green);
+    background: var(--green-glow);
+  }
+
+  .google-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Footer note */
+  .footer-note {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .footer-note a {
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* Setup notice */
+  .setup-notice {
+    background: rgba(132,204,22,0.06);
+    border: 1px solid rgba(132,204,22,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .setup-notice strong { color: var(--green); }
+
+  /* Verified badge on register success */
+  .success-screen {
+    text-align: center;
+    padding: 20px 0;
+    display: none;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(132,204,22,0.12);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+    border: 2px solid var(--green);
+    box-shadow: 0 0 24px var(--green-glow);
+  }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .success-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 24px 20px; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
-<body style="text-align:center; padding-top:100px; font-family:sans-serif; background:#f4f4f4;">
-    <div style="background:#fff; padding:30px; border-radius:10px; display:inline-block; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-        <h2>Karibu Admin</h2>
-        <p>Ingiza password ili kufikia dashibodi</p>
-        <input type="password" id="pass" placeholder="Password" style="padding:10px; margin:10px 0; width:200px;">
-        <br>
-        <button onclick="login()" style="padding:10px 20px; background:#84cc16; border:none; color:white; cursor:pointer;">Ingia</button>
+<body>
+
+<div class="container">
+
+  <!-- Logo -->
+  <div class="logo">
+    <a href="index.html" class="logo-mark">
+      <div class="logo-icon">L</div>
+      <span class="logo-text">Lupa<span>nulla</span></span>
+    </a>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Ingia</button>
+      <button class="tab" onclick="switchTab('register')">Jiunge Bure</button>
     </div>
 
-    <script>
-        function login() {
-            let password = document.getElementById('pass').value;
-            // Password yako imewekwa hapa
-            if(password === "lupanulla@admin2026") {
-                localStorage.setItem('admin_access', 'granted');
-                window.location.href = "admin.html";
-            } else {
-                alert("Password siyo sahihi! Jaribu tena.");
-            }
-        }
-    </script>
+    <!-- ===== LOGIN FORM ===== -->
+    <div class="form active" id="loginForm">
+      <div class="form-title">Karibu tena 👋</div>
+      <div class="form-subtitle">Ingia kuendelea na masomo yako</div>
+
+      <div id="loginMsg"></div>
+
+      <div class="field">
+        <label>Barua pepe</label>
+        <input type="email" id="loginEmail" placeholder="mfano@gmail.com" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label>Nenosiri</label>
+        <div class="pass-wrap">
+          <input type="password" id="loginPass" placeholder="Nenosiri lako" autocomplete="current-password">
+          <button class="pass-toggle" onclick="togglePass('loginPass', this)" type="button">👁</button>
+        </div>
+      </div>
+
+      <div class="forgot">
+        <a href="#" onclick="forgotPassword(); return false;">Umesahau nenosiri?</a>
+      </div>
+
+      <button class="btn" onclick="loginUser()" id="loginBtn">
+        <span class="btn-spinner"></span>
+        <span class="btn-text">Ingia</span>
+      </button>
+
+      <div class="divider">au</div>
+
+      <button class="btn-google" onclick="loginGoogle()">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Endelea na Google
+      </button>
+
+      <div class="footer-note">
+        Huna akaunti? <a href="#" onclick="switchTab('register'); return false;">Jiunge bure →</a>
+      </div>
+    </div>
+
+    <!-- ===== REGISTER FORM ===== -->
+    <div class="form" id="registerForm">
+      <div id="registerSuccess" class="success-screen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Umefanikiwa! 🎉</div>
+        <p class="success-sub">Akaunti yako imesajiliwa.<br>Angalia barua pepe yako kuthibitisha, kisha <a href="#" onclick="switchTab('login'); hideSuccess(); return false;" style="color:var(--green)">ingia hapa</a>.</p>
+      </div>
+
+      <div id="registerMain">
+        <div class="form-title">Jiunge Leo 🚀</div>
+        <div class="form-subtitle">Bure kabisa — notes, past papers & AI msaidizi</div>
+
+        <div id="registerMsg"></div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Jina la Kwanza</label>
+            <input type="text" id="regFirstName" placeholder="Jina" autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label>Jina la Pili</label>
+            <input type="text" id="regLastName" placeholder="Ukoo" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Barua pepe</label>
+          <input type="email" id="regEmail" placeholder="mfano@gmail.com" autocomplete="email">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Darasa</label>
+            <select id="regClass">
+              <option value="">Chagua...</option>
+              <option value="Form 1">Form 1</option>
+              <option value="Form 2">Form 2</option>
+              <option value="Form 3">Form 3</option>
+              <option value="Form 4">Form 4</option>
+              <option value="Form 5">Form 5</option>
+              <option value="Form 6">Form 6</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Mkoa</label>
+            <select id="regRegion">
+              <option value="">Chagua...</option>
+              <option>Dar es Salaam</option>
+              <option>Arusha</option>
+              <option>Mwanza</option>
+              <option>Dodoma</option>
+              <option>Mbeya</option>
+              <option>Morogoro</option>
+              <option>Tanga</option>
+              <option>Kilimanjaro</option>
+              <option>Nyingine</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nenosiri</label>
+          <div class="pass-wrap">
+            <input type="password" id="regPass" placeholder="Angalau herufi 8" autocomplete="new-password">
+            <button class="pass-toggle" onclick="togglePass('regPass', this)" type="button">👁</button>
+          </div>
+        </div>
+
+        <button class="btn" onclick="registerUser()" id="registerBtn">
+          <span class="btn-spinner"></span>
+          <span class="btn-text">Unda Akaunti Bure</span>
+        </button>
+
+        <div class="divider">au</div>
+
+        <button class="btn-google" onclick="loginGoogle()">
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Endelea na Google
+        </button>
+
+        <div class="footer-note">
+          Una akaunti tayari? <a href="#" onclick="switchTab('login'); return false;">Ingia hapa →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Setup notice -->
+  <div class="setup-notice">
+    <strong>⚙️ Maelezo ya Msanidi:</strong> Badilisha <code>firebaseConfig</code> hapa chini na credentials zako halisi za Firebase. 
+    Toa script ya <code>firebase-placeholder</code> na ubadilishe na Firebase SDK yako.
+  </div>
+
+</div>
+
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDdzMCnoAh3zOd_bWF6VDCXwSvCjFg7GGI",
+  authDomain: "lupanullaa-b1989.firebaseapp.com",
+  projectId: "lupanullaa-b1989",
+  storageBucket: "lupanullaa-b1989.firebasestorage.app",
+  messagingSenderId: "561433205769",
+  appId: "1:561433205769:web:78fe4d22fc0b92a3226cd8",
+  measurementId: "G-8MD3GWTQRG"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+  let app, auth, db;
+
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+
+    // Angalia kama mtumiaji ameingia tayari
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Mwelekeze kwenye ukurasa mkuu
+        window.location.href = "index.html";
+      }
+    });
+  } catch(e) {
+    console.warn("Firebase haijasanidiwa bado:", e.message);
+  }
+
+  // ---- Msaada wa ujumbe wa makosa (Kiswahili) ----
+  function translateError(code) {
+    const errors = {
+      "auth/email-already-in-use": "Barua pepe hii tayari inatumika. Jaribu kuingia.",
+      "auth/invalid-email": "Barua pepe si sahihi.",
+      "auth/weak-password": "Nenosiri ni fupi sana. Tumia angalau herufi 8.",
+      "auth/user-not-found": "Hakuna akaunti na barua pepe hii.",
+      "auth/wrong-password": "Nenosiri si sahihi. Jaribu tena.",
+      "auth/too-many-requests": "Majaribio mengi. Subiri dakika chache.",
+      "auth/network-request-failed": "Tatizo la mtandao. Angalia internet yako.",
+      "auth/popup-closed-by-user": "Umefunga popup. Jaribu tena.",
+      "auth/invalid-credential": "Barua pepe au nenosiri si sahihi.",
+    };
+    return errors[code] || "Hitilafu imetokea. Jaribu tena.";
+  }
+
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = "msg " + type;
+  }
+
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (loading) btn.classList.add('loading'), btn.disabled = true;
+    else btn.classList.remove('loading'), btn.disabled = false;
+  }
+
+  // ---- USAJILI ----
+  window.registerUser = async function() {
+    const firstName = document.getElementById('regFirstName').value.trim();
+    const lastName = document.getElementById('regLastName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const userClass = document.getElementById('regClass').value;
+    const region = document.getElementById('regRegion').value;
+
+    if (!firstName || !email || !pass) {
+      return showMsg('registerMsg', 'Tafadhali jaza sehemu zote muhimu.', 'error');
+    }
+    if (pass.length < 8) {
+      return showMsg('registerMsg', 'Nenosiri linahitaji angalau herufi 8.', 'error');
+    }
+    if (!auth) {
+      return showMsg('registerMsg', 'Firebase haijasanidiwa bado. Angalia maelezo ya msanidi.', 'error');
+    }
+
+    setLoading('registerBtn', true);
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      const user = cred.user;
+
+      // Weka jina
+      await updateProfile(user, { displayName: firstName + ' ' + lastName });
+
+      // Hifadhi maelezo Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName, lastName,
+        email,
+        class: userClass,
+        region,
+        role: 'student',
+        plan: 'free',
+        joinedAt: serverTimestamp(),
+        quizzesToday: 0,
+        lastQuizDate: null,
+      });
+
+      // Onesha mafanikio
+      document.getElementById('registerMain').style.display = 'none';
+      document.getElementById('registerSuccess').style.display = 'block';
+
+    } catch(e) {
+      showMsg('registerMsg', translateError(e.code), 'error');
+    } finally {
+      setLoading('registerBtn', false);
+    }
+  };
+
+  // ---- LOGIN ----
+  window.loginUser = async function() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+
+    if (!email || !pass) {
+      return showMsg('loginMsg', 'Jaza barua pepe na nenosiri.', 'error');
+    }
+    if (!auth) {
+      return showMsg('loginMsg', 'Firebase haijasanidiwa bado. Angalia maelezo ya msanidi.', 'error');
+    }
+
+    setLoading('loginBtn', true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      // onAuthStateChanged itaelekeza moja kwa moja
+    } catch(e) {
+      showMsg('loginMsg', translateError(e.code), 'error');
+      setLoading('loginBtn', false);
+    }
+  };
+
+  // ---- GOOGLE LOGIN ----
+  window.loginGoogle = async function() {
+    if (!auth) return alert('Firebase haijasanidiwa bado.');
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Angalia kama ni mtumiaji mpya — hifadhi Firestore
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          firstName: user.displayName?.split(' ')[0] || '',
+          lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+          email: user.email,
+          class: '',
+          region: '',
+          role: 'student',
+          plan: 'free',
+          joinedAt: serverTimestamp(),
+          quizzesToday: 0,
+          lastQuizDate: null,
+        });
+      }
+    } catch(e) {
+      const id = document.getElementById('loginForm').classList.contains('active') ? 'loginMsg' : 'registerMsg';
+      showMsg(id, translateError(e.code), 'error');
+    }
+  };
+
+  // ---- FORGOT PASSWORD ----
+  window.forgotPassword = async function() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) return showMsg('loginMsg', 'Kwanza andika barua pepe yako hapo juu.', 'error');
+    if (!auth) return;
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showMsg('loginMsg', '✓ Barua pepe ya kubadilisha nenosiri imetumwa!', 'success');
+    } catch(e) {
+      showMsg('loginMsg', translateError(e.code), 'error');
+    }
+  };
+
+</script>
+
+<script>
+  // ---- TAB SWITCHING ----
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1));
+    });
+    document.getElementById('loginForm').classList.toggle('active', tab==='login');
+    document.getElementById('registerForm').classList.toggle('active', tab==='register');
+    document.getElementById('loginMsg').className = 'msg';
+    document.getElementById('registerMsg').className = 'msg';
+  }
+
+  // ---- PASSWORD TOGGLE ----
+  function togglePass(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁';
+    }
+  }
+
+  // ---- HIDE SUCCESS ----
+  function hideSuccess() {
+    document.getElementById('registerMain').style.display = 'block';
+    document.getElementById('registerSuccess').style.display = 'none';
+  }
+
+  // ---- ENTER KEY ----
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('loginForm').classList.contains('active')) {
+        window.loginUser && window.loginUser();
+      } else {
+        window.registerUser && window.registerUser();
+      }
+    }
+  });
+</script>
+
 </body>
 </html>
