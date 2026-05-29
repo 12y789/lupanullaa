@@ -4,96 +4,39 @@
 
 ---
 
-## 📋 Muhtasari
+## 📋 Kuhusu Lupanullaa
 
-Lupanullaa ni platform ya elimu iliyoundwa kwa ajili ya wanafunzi na walimu wa Tanzania. Inajumuisha:
+Lupanullaa ni jukwaa la elimu la kidijitali lililoundwa maalum kwa wanafunzi na walimu wa Tanzania. Lengo kuu ni kutoa maudhui bora, yanayofaa na rahisi kufikia ili kuwasaidia wanafunzi kufanya vizuri katika mitihani ya NECTA.
 
-- 📚 **Notes** — Muhtasari wa masomo yote kwa TIE syllabus mpya
-- 📄 **Past Papers** — Maswali ya NECTA ya miaka iliyopita
-- 🎯 **Daily Quizzes** — Maswali 10 kila siku kwa masomo mbalimbali
-- 🤖 **AI Msaidizi** — Chatbot inayosaidia maswali ya elimu (Gemini AI)
-- 🌙 **Dark Mode** — Muonekano wa usiku
-- 🌐 **Kiswahili / English** — Lugha mbili zinazobadilishana
+Jukwaa linazingatia kikamilifu **mtaala mpya wa TIE** (Tanzania Institute of Education) na linashughulikia masomo yote ya sekondari (Form 1 hadi Form 6).
+
+### Vipengele Kuu vya Platform
+
+- 📚 **Notes**  
+  Muhtasari wa kina, safi na wa kisasa wa masomo yote kulingana na silabasi mpya ya TIE. Maelezo yameandikwa kwa lugha rahisi kuelewa.
+
+- 📄 **Past Papers**  
+  Mkusanyiko mkubwa wa maswali ya NECTA ya miaka iliyopita pamoja na majibu yaliyoelezwa.
+
+- 🎯 **Daily Quizzes**  
+  Mazoezi ya maswali 10 mapya kila siku. Yanasaidia wanafunzi kujaribu maarifa yao na kufanya mazoezi ya kila siku.
+
+- 🤖 **AI Msaidizi**  
+  Chatbot yenye akili inayotumia **Google Gemini 1.5 Flash**. Inaweza kujibu maswali yoyote ya masomo, kutoa maelezo, kufafanua dhana ngumu, na kusaidia katika kazi za nyumbani.
+
+- 🌙 **Dark Mode**  
+  Muonekano mzuri unaofaa kwa usomaji wa usiku na kupunguza uchovu wa macho.
+
+- 🌐 **Lugha Mbili**  
+  Inatumia **Kiswahili** (chaguo-msingi) na **English**. Unaweza kubadilisha lugha wakati wowote.
 
 ---
 
-## 🗂️ Muundo wa Faili
+## 🗂️ Muundo wa Mradi
 
-```
+```bash
 lupanullaa/
-├── index.html                  # Ukurasa mkuu (frontend yote)
-├── admin.html                  # Dashboard ya msimamizi
-├── netlify.toml                # Mipangilio ya Netlify
-└── netlify/
-    └── functions/
-        └── chat.js             # Netlify Function — AI Chat (Gemini API)
-```
-
----
-
-## ⚙️ Teknolojia Inayotumiwa
-
-| Sehemu | Teknolojia |
-|---|---|
-| Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Fonts | Google Fonts (Syne, Plus Jakarta Sans) |
-| Icons | Font Awesome |
-| UI Extras | Tailwind CSS (modal ya jiunge) |
-| AI Backend | Netlify Functions + Google Gemini 1.5 Flash |
-| Hosting | Netlify |
-
----
-## 🤖 Jinsi AI Chat Inavyofanya Kazi
-
-```
-Mtumiaji (Browser)
-       │
-       │  POST /.netlify/functions/chat
-       │  { system, messages }
-       ▼
-Netlify Function (chat.js)
-       │
-       │  POST https://generativelanguage.googleapis.com
-       │  API Key iko server-side (salama, haionekani browser)
-       ▼
-Google Gemini 1.5 Flash
-       │
-       ▼
-Jibu → Mtumiaji
-```
-
-> **Muhimu:** API key haiko frontend. Ipo kwenye Netlify Environment Variables peke yake.
-
----
-
-## 🔐 Usalama
-
-- ✅ API key ya Gemini imefichwa — ipo server-side tu
-- ✅ CORS imewekwa vizuri kwenye Netlify Function
-- ✅ Input validation kabla ya kutuma kwa Gemini
-- ✅ Error handling kwa kila kosa la API au mtandao
-
----
-
-## 🌍 Lugha
-
-Platform inasaidia lugha mbili:
-
-- 🇹🇿 **Kiswahili** (default)
-- 🇬🇧 **English** (kubonyeza kitufe cha lugha)
-
-AI Msaidizi anajibu kwa lugha ile ile mtumiaji anaandika.
-
----
-
-## 📞 Mawasiliano
-
-- WhatsApp: Kupitia widget ndani ya site
-- Admin Panel: `admin.html`
-
----
-
-## 📝 Leseni
-
-© 2025 Lupanullaa Tanzania. Haki zote zimehifadhiwa.
-
+├── index.html                 # Ukurasa mkuu wa platform (frontend yote)
+├── admin.html                 # Admin Dashboard ya msimamizi
+└── backend/                   # (Folder kwa AI na backend logic - kama ipo)
+    └── chat.js                # Function kwa AI Chat (Gemini)ction kwa AI Chat
