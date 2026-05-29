@@ -1,4 +1,5 @@
-# 🌿 Lupanullaa
+# 🌿 <img width="827" height="703" alt="image" src="https://github.com/user-attachments/assets/bd23cd1c-f2f0-4c1a-bd16-d9ff5d00fb8d" />
+Lupanullaa
 
 **Jukwaa 1 la Elimu Tanzania** — Notes, Past Papers, Daily Quizzes , AI Msaidizi kwa wanafunzi na walimu wa NECTA.
 
