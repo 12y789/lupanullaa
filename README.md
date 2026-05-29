@@ -43,32 +43,6 @@ lupanullaa/
 | Hosting | Netlify |
 
 ---
-
-## 🚀 Jinsi ya Deploy (Netlify)
-
-### Hatua ya 1 — Tengeneza API Key ya Gemini
-
-1. Nenda [console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
-2. Bonyeza **+ Create Credentials → API Key**
-3. Copy key iliyotengenezwa
-
-### Hatua ya 2 — Weka Environment Variable kwenye Netlify
-
-1. Nenda [app.netlify.com](https://app.netlify.com) → chagua site yako
-2. **Site configuration → Environment variables**
-3. Bonyeza **Add a variable**:
-   - **Key:** `GEMINI_API_KEY`
-   - **Value:** *(bandika key yako)*
-4. Bonyeza **Save**
-
-### Hatua ya 3 — Deploy
-
-1. Nenda tab ya **Deploys**
-2. Buruta (drag & drop) zip ya project kwenye **"Deploy manually"**
-3. Subiri ✅ green — tayari!
-
----
-
 ## 🤖 Jinsi AI Chat Inavyofanya Kazi
 
 ```
