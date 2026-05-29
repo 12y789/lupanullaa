@@ -4599,6 +4599,98 @@ body.dark #aiChatModal>div>div:last-child{background:#0d1f14;border-color:rgba(2
 <div id="docModal" onclick="if(event.target===this)closeDoc()">
   <div class="doc-container" id="docContainer"></div>
 </div>
+<script>
+// ==================== FIREBASE CONFIG ====================
+const firebaseConfig = {
+  apiKey: "AIzaSyDdzMCnoAh3zOd_bWF6VDCXwSvCjFg7GGI",
+  authDomain: "lupanullaa-b1989.firebaseapp.com",
+  projectId: "lupanullaa-b1989",
+  storageBucket: "lupanullaa-b1989.firebasestorage.app",
+  messagingSenderId: "561433205769",
+  appId: "1:561433205769:web:78fe4d22fc0b92a3226cd8",
+  measurementId: "G-8MD3GWTQRG"
+};
 
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ==================== ADMIN AUTH ====================
+const ADMIN_EMAIL = "admin@lupanulla.co.tz";
+
+async function checkAdminPass() {
+  const inp = document.getElementById('gatePass');
+  const err = document.getElementById('gateErr');
+  const val = inp.value.trim();
+  
+  if (!val) return;
+
+  try {
+    await auth.signInWithEmailAndPassword(ADMIN_EMAIL, val);
+    sessionStorage.setItem('lp_admin_ok', 'true');
+    document.getElementById('adminGate').style.display = 'none';
+    st('✅ Karibu Admin Lupanulla! Umefanikiwa kuingia.');
+    loadRealTimeData();
+  } catch (e) {
+    err.style.display = 'block';
+    inp.value = '';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+// Check if already logged in
+auth.onAuthStateChanged((user) => {
+  if (user && user.email === ADMIN_EMAIL) {
+    const gate = document.getElementById('adminGate');
+    if (gate) gate.style.display = 'none';
+    loadRealTimeData();
+  }
+});
+
+// ==================== REAL-TIME DASHBOARD DATA ====================
+function loadRealTimeData() {
+  // Wanafunzi
+  db.collection("students").onSnapshot((snapshot) => {
+    const count = snapshot.size;
+    const els = document.querySelectorAll('.kn');
+    if (els[0]) els[0].textContent = count.toLocaleString();
+  });
+
+  // Walimu
+  db.collection("teachers").onSnapshot((snapshot) => {
+    const els = document.querySelectorAll('.kn');
+    if (els[1]) els[1].textContent = snapshot.size;
+  });
+
+  // Malipo ya mwezi huu
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0,0,0,0);
+
+  db.collection("payments")
+    .where("timestamp", ">=", startOfMonth)
+    .onSnapshot((snapshot) => {
+      let total = 0;
+      snapshot.forEach((doc) => {
+        total += doc.data().amount || 0;
+      });
+      const els = document.querySelectorAll('.kn');
+      if (els[2]) els[2].textContent = (total / 1000000).toFixed(1) + "M";
+    });
+}
+
+// Toast function (iliyoboreshwa)
+function st(msg) {
+  const toast = document.getElementById('toast');
+  if (toast) {
+    toast.innerHTML = `<i class="fas fa-check-circle" style="color:var(--lime2);"></i> ${msg}`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+}
+
+// ... (acha function zingine zote za tovuti kama zilivyo: sp(), openDoc(), n.k.)
+</script>
 </body>
 </html>
